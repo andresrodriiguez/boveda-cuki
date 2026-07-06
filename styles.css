@@ -494,6 +494,31 @@ footer { border-top: 1px solid var(--border); padding: 40px 0 60px; }
   .tilt, .tilt-card { transition: transform .12s ease-out; }
 }
 
+/* ===================== AVISO INSTALAR iOS ===================== */
+.ios-install {
+  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 200;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card-solid); border: 1px solid var(--border-strong);
+  border-radius: 16px; padding: 12px 14px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  animation: iosUp .4s cubic-bezier(.2,.7,.2,1);
+}
+.ios-install[hidden] { display: none; }
+@keyframes iosUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: none; } }
+.ios-install .ios-ic { width: 44px; height: 44px; border-radius: 11px; flex: none; }
+.ios-install .ios-txt { flex: 1; font-size: 13px; line-height: 1.4; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.ios-install .ios-txt b { color: var(--text); font-weight: 600; }
+.ios-install .ios-share {
+  display: inline-block; width: 18px; height: 18px; vertical-align: -4px;
+  background: no-repeat center/contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234c9dff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 15V3'/%3E%3Cpath d='M8 7l4-4 4 4'/%3E%3Cpath d='M5 12v7a1 1 0 001 1h12a1 1 0 001-1v-7'/%3E%3C/svg%3E");
+}
+.ios-install .ios-close {
+  flex: none; background: rgba(127,127,127,0.15); border: none; color: var(--muted);
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 13px;
+}
+.ios-install .ios-close:hover { color: var(--text); }
+
 /* ===================== BOTÓN DE TEMA ===================== */
 .theme-toggle {
   background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text);

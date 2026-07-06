@@ -514,3 +514,21 @@ window.__onRatesUpdated = function () {
   if (document.querySelector('.view[data-view="conversiones"].active')) renderConverter();
   if (document.querySelector('.view[data-view="movimientos"].active')) renderMovements();
 };
+
+// ---------- Aviso de instalación para iPhone ----------
+(function iosInstallHint() {
+  const el = document.getElementById('iosInstall');
+  if (!el) return;
+  const ua = navigator.userAgent || '';
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem('iosHintDismissed') === '1'; } catch (e) {}
+  if (isIOS && !standalone && !dismissed) {
+    setTimeout(() => { el.hidden = false; }, 1500);
+  }
+  document.getElementById('iosClose')?.addEventListener('click', () => {
+    el.hidden = true;
+    try { localStorage.setItem('iosHintDismissed', '1'); } catch (e) {}
+  });
+})();

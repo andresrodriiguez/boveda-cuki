@@ -1,0 +1,16 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { chromium } from 'playwright';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const url = process.argv[2] || 'https://boveda-cuki.vercel.app/';
+const theme = process.argv[3] || 'light';
+const browser = await chromium.launch({ channel: 'chrome' });
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+await ctx.addInitScript((t) => { try { localStorage.setItem('theme', t); } catch (e) {} }, theme);
+const page = await ctx.newPage();
+await page.goto(url, { waitUntil: 'networkidle' });
+await page.waitForTimeout(1500);
+const active = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+console.log('URL:', url, '| tema aplicado:', active);
+await page.screenshot({ path: path.join(__dirname, 'screenshots', `live-${theme}.png`) });
+await browser.close();
