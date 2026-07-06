@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bóveda Cuki — Domina tus finanzas en cada moneda</title>
+  <meta name="description" content="Bóveda Cuki reúne USDT, dólar BCV y euro BCV en un solo lugar: tasas en tiempo real, conversiones y noticias de la economía de Venezuela. Simple, intuitivo y sin sorpresas." />
+  <meta name="theme-color" content="#05070d" />
+  <meta name="author" content="Bóveda Cuki" />
+  <!-- Tema (anti-parpadeo): fija el tema antes de pintar -->
+  <script>(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bóveda Cuki" />
+  <!-- Open Graph / redes sociales -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bóveda Cuki — Domina tus finanzas en cada moneda" />
+  <meta property="og:description" content="USDT, dólar BCV y euro BCV en un solo lugar. Tasas en tiempo real y noticias de la economía venezolana." />
+  <meta property="og:locale" content="es_VE" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bóveda Cuki — Domina tus finanzas en cada moneda" />
+  <meta name="twitter:description" content="USDT, dólar BCV y euro BCV en un solo lugar. Tasas en tiempo real y noticias de Venezuela." />
+  <!-- Favicon inline (bóveda azul) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2305070d'/%3E%3Cpath d='M12 4L5 7.5v9L12 20l7-3.5v-9L12 4z' fill='none' stroke='%234c9dff' stroke-width='1.6'/%3E%3Cpath d='M12 8l3.5 2v4L12 16l-3.5-2v-4L12 8z' fill='%234c9dff' opacity='0.6'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-layer"></div>
+  <div class="stars"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#4c9dff" stroke-width="1.6"/><path d="M12 7l4.5 2.5v5L12 17l-4.5-2.5v-5L12 7z" fill="#4c9dff" opacity="0.5"/></svg>
+        Bóveda Cuki
+      </div>
+      <div class="nav-right">
+        <a href="#noticias">Noticias</a>
+        <a href="#tasas">Tasas</a>
+        <button id="themeToggle" class="theme-toggle" aria-label="Cambiar tema claro/oscuro" title="Cambiar tema">🌙</button>
+        <a href="#" class="btn btn-ghost" id="installBtn" style="display:none">⤓ Instalar app</a>
+        <a href="#" class="btn btn-ghost">Únete a la lista</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero wrap">
+    <div class="coins" aria-hidden="true">
+      <div class="coin-float c1">₮</div>
+      <div class="coin-float c2">$</div>
+      <div class="coin-float c3">€</div>
+      <div class="coin-float c4">Bs</div>
+    </div>
+    <span class="eyebrow"><span class="dot"></span> <span id="rates-status">Tasas en tiempo real · USDT · Bs · €</span></span>
+    <h1>Domina tus finanzas<br/>en cada moneda</h1>
+    <p class="sub">Adiós al caos de las tasas. Todo venezolano, sin importar su rubro, puede gestionar su dinero en USDT, bolívares a tasa dólar y a tasa euro. Simple. Intuitivo. Sin sorpresas.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn btn-primary">Únete a la lista de espera</a>
+      <a href="#tasas" class="learn">Ver más<br/>↓</a>
+    </div>
+  </header>
+
+  <!-- APP INTERACTIVA -->
+  <section class="dashboard-shell wrap" id="tasas">
+    <div class="dashboard" id="app">
+      <aside class="dash-side">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#4c9dff" stroke-width="1.6"/></svg>
+          Bóveda Cuki
+        </div>
+        <div class="nav-item active" data-view="panel"><span class="ic">◈</span> Panel</div>
+        <div class="nav-item" data-view="conversiones"><span class="ic">↺</span> Conversiones</div>
+        <div class="nav-item" data-view="movimientos"><span class="ic">▤</span> Movimientos</div>
+        <div class="nav-item" data-view="genio"><span class="ic">✦</span> Genio</div>
+        <div class="nav-item" data-view="soon"><span class="ic">◫</span> Billeteras</div>
+        <div class="sep"></div>
+        <div class="nav-item" data-view="soon"><span class="ic">⚙</span> Ajustes</div>
+      </aside>
+      <div class="dash-main">
+        <div class="dash-topbar">
+          <div class="dash-search" id="app-title">◈ Panel · Resumen del mercado</div>
+          <div class="tools">
+            <div class="chip" title="Actualizar" id="app-refresh">↻</div><div class="chip">🔔</div><div class="avatar"></div>
+          </div>
+        </div>
+
+        <!-- VISTA: PANEL -->
+        <div class="view active" data-view="panel">
+          <div class="stat-row">
+            <div class="stat">
+              <div class="top"><span class="label">USDT / Paralelo</span><span class="badge blue" id="badge-usdt" data-badge="usdt">P2P</span></div>
+              <div class="cur"><span class="coin usdt">₮</span><div class="value"><span class="countup" id="rate-usdt" data-rate="usdt" data-to="745.18" data-dec="2">0,00</span> <small>Bs</small></div></div>
+            </div>
+            <div class="stat">
+              <div class="top"><span class="label">Dólar BCV</span><span class="badge blue" id="badge-usd" data-badge="usd">Oficial</span></div>
+              <div class="cur"><span class="coin usd">$</span><div class="value"><span class="countup" id="rate-usd" data-rate="usd" data-to="667.05" data-dec="2">0,00</span> <small>Bs</small></div></div>
+            </div>
+            <div class="stat">
+              <div class="top"><span class="label">Euro BCV</span><span class="badge blue" id="badge-eur" data-badge="eur">Oficial</span></div>
+              <div class="cur"><span class="coin eur">€</span><div class="value"><span class="countup" id="rate-eur" data-rate="eur" data-to="763.19" data-dec="2">0,00</span> <small>Bs</small></div></div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-head">
+              <div class="legends">
+                <div class="lg"><span class="k"><span class="swatch" style="background:var(--teal)"></span>USDT/Bs</span><b data-rate="usdt" data-dec="2">745,18</b></div>
+                <div class="lg"><span class="k"><span class="swatch" style="background:var(--accent)"></span>Dólar BCV</span><b data-rate="usd" data-dec="2">667,05</b></div>
+              </div>
+              <div class="filters"><span class="f">Día</span><span class="f active">Semana</span><span class="f">Mes</span></div>
+            </div>
+            <svg viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="fillTeal" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#35d0c0" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#35d0c0" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g stroke="rgba(255,255,255,0.05)" stroke-width="1">
+                <line x1="0" y1="40" x2="640" y2="40"/><line x1="0" y1="90" x2="640" y2="90"/>
+                <line x1="0" y1="140" x2="640" y2="140"/>
+              </g>
+              <path d="M0,150 C80,140 120,120 200,125 C280,130 320,80 400,70 C480,60 540,95 640,60 L640,200 L0,200 Z" fill="url(#fillTeal)"/>
+              <path class="chart-line" d="M0,150 C80,140 120,120 200,125 C280,130 320,80 400,70 C480,60 540,95 640,60" fill="none" stroke="#35d0c0" stroke-width="2.5"/>
+              <path class="chart-line line2" d="M0,170 C90,168 140,160 220,158 C300,156 360,140 440,132 C520,124 560,130 640,118" fill="none" stroke="#4c9dff" stroke-width="2" opacity="0.85"/>
+              <circle class="pulse-dot" cx="400" cy="70" r="4" fill="#35d0c0"/><circle cx="400" cy="70" r="8" fill="#35d0c0" opacity="0.25"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- VISTA: CONVERSIONES -->
+        <div class="view" data-view="conversiones">
+          <h3 class="view-title">Conversor de monedas</h3>
+          <div class="conv-box">
+            <div class="conv-input">
+              <input type="number" id="conv-amount" value="100" min="0" step="any" inputmode="decimal" />
+              <select id="conv-from" aria-label="Moneda de origen">
+                <option value="usdt">USDT</option>
+                <option value="usd">Dólar BCV</option>
+                <option value="eur">Euro BCV</option>
+                <option value="bs">Bolívares</option>
+              </select>
+            </div>
+            <div class="conv-results" id="conv-results"></div>
+            <p class="conv-note">Calculado con tasas en vivo · <span id="conv-basis">—</span></p>
+          </div>
+        </div>
+
+        <!-- VISTA: MOVIMIENTOS -->
+        <div class="view" data-view="movimientos">
+          <h3 class="view-title">Movimientos</h3>
+          <form id="mov-form" class="mov-form" autocomplete="off">
+            <select id="mov-type" aria-label="Tipo">
+              <option value="ingreso">＋ Ingreso</option>
+              <option value="gasto">－ Gasto</option>
+            </select>
+            <input type="number" id="mov-amount" placeholder="Monto" step="any" min="0" required />
+            <select id="mov-cur" aria-label="Moneda">
+              <option value="usdt">USDT</option>
+              <option value="usd">$ BCV</option>
+              <option value="eur">€ BCV</option>
+              <option value="bs">Bs</option>
+            </select>
+            <input type="text" id="mov-note" placeholder="Nota (ej. Pago freelance)" maxlength="40" />
+            <button type="submit" class="mini-btn conv-btn">Agregar</button>
+          </form>
+          <div class="mov-summary" id="mov-summary"></div>
+          <div class="mov-list" id="mov-list"></div>
+        </div>
+
+        <!-- VISTA: GENIO (chat) -->
+        <div class="view" data-view="genio">
+          <h3 class="view-title">✦ Genio · asistente financiero</h3>
+          <div class="chat-thread" id="chat-thread"></div>
+          <div class="chat-suggest" id="chat-suggest"></div>
+          <form class="chat-form" id="chat-form" autocomplete="off">
+            <input type="text" id="chat-input" placeholder="Pregúntame: ¿cuánto es 50 USDT en Bs?" />
+            <button type="submit" class="mini-btn conv-btn">Enviar</button>
+          </form>
+        </div>
+
+        <!-- VISTA: PRÓXIMAMENTE -->
+        <div class="view" data-view="soon">
+          <div class="soon-box">
+            <div class="soon-ic">🔒</div>
+            <h3>Próximamente</h3>
+            <p>Billeteras conectadas, ajustes y más funciones están en camino. Por ahora ya tienes tasas en vivo, conversor, movimientos y Genio funcionando.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RATES TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">USDT <b data-rate="usdt" data-dec="2" data-suffix=" Bs">745,18 Bs</b></span>
+      <span class="ticker-item">Dólar BCV <b data-rate="usd" data-dec="2" data-suffix=" Bs">667,05 Bs</b></span>
+      <span class="ticker-item">Euro BCV <b data-rate="eur" data-dec="2" data-suffix=" Bs">763,19 Bs</b></span>
+      <span class="ticker-item">Brecha USDT/BCV <b data-rate="gap" data-dec="1" data-suffix="%">11,7%</b></span>
+      <span class="ticker-item">Inflación mayo <b>524,5%</b></span>
+      <span class="ticker-item">Remesas 2025 <b>USD 3.200M</b></span>
+      <!-- duplicate for seamless loop -->
+      <span class="ticker-item">USDT <b data-rate="usdt" data-dec="2" data-suffix=" Bs">745,18 Bs</b></span>
+      <span class="ticker-item">Dólar BCV <b data-rate="usd" data-dec="2" data-suffix=" Bs">667,05 Bs</b></span>
+      <span class="ticker-item">Euro BCV <b data-rate="eur" data-dec="2" data-suffix=" Bs">763,19 Bs</b></span>
+      <span class="ticker-item">Brecha USDT/BCV <b data-rate="gap" data-dec="1" data-suffix="%">11,7%</b></span>
+      <span class="ticker-item">Inflación mayo <b>524,5%</b></span>
+      <span class="ticker-item">Remesas 2025 <b>USD 3.200M</b></span>
+    </div>
+  </div>
+
+  <!-- BORING SECTION -->
+  <section class="block wrap">
+    <div class="two-col">
+      <h2 class="big">¿Quién dijo que llevar tus cuentas tiene que ser un dolor de cabeza?</h2>
+      <p>Con Bóveda Cuki, gestionar tu dinero en Venezuela deja de ser una hoja de cálculo llena de tasas desactualizadas. Nuestra plataforma reúne <b>USDT, dólar BCV y euro BCV</b> en un solo lugar, calcula la brecha por ti y te muestra cuánto vale realmente tu dinero hoy. Di adiós a preguntar "¿a cómo está el dólar?" cinco veces al día.</p>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="block wrap">
+    <div class="section-lead">
+      <h2 class="big">Todo lo que necesitas.<br/><span class="muted-title">Nada que te sobre.</span></h2>
+      <p>Gestión financiera y visibilidad en un solo lugar. Una <b>caja de herramientas flexible</b> pensada para la economía venezolana.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="mini">
+            <div class="mini-card">
+              <div class="mini-row"><span class="k">Tienes en USDT</span><span class="v">₮ 1.250,00</span></div>
+              <div class="mini-row"><span class="k">Equivale a</span><span class="v" style="color:var(--teal)">919.725 Bs</span></div>
+              <div class="mini-row"><span class="k">A tasa BCV</span><span class="v" style="color:var(--muted)">799.625 Bs</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Tus tasas al alcance</h3>
+          <p>Todas tus monedas y tasas en un solo panel para responder rápido y decidir al instante, con la brecha calculada por ti.</p>
+        </div>
+      </div>
+
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="mini">
+            <div class="mini-card">
+              <div class="mini-row"><span class="k">Convertir</span><span class="v">$100 → Bs</span></div>
+              <div class="mini-row"><span class="k">Tasa USDT</span><span class="v" style="color:var(--teal)">73.578 Bs</span></div>
+              <div class="mini-row"><span class="k">Tasa Euro</span><span class="v" style="color:var(--accent)">72.848 Bs</span></div>
+              <div class="mini-btn">Convertir ahora →</div>
+            </div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Convierte en tiempo real</h3>
+          <p>Toma el control de tu dinero desde el móvil. Convierte entre USDT, dólar y euro con las tasas del día, dondequiera que estés.</p>
+        </div>
+      </div>
+
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="mini">
+            <div class="alert-card">⚠️ <div><b>Alerta de tasa</b><br/>El USDT superó los 735 Bs. Tu meta de ahorro se alcanza antes de lo previsto.</div></div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Alertas que importan</h3>
+          <p>Elige las alertas que necesitas y recíbelas por correo, móvil o Telegram cuando una tasa se mueva. Actúa en un clic.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="logos">
+            <div class="logo-chip b">Binance</div>
+            <div class="logo-chip z">Zinli</div>
+            <div class="logo-chip">Zelle</div>
+            <div class="logo-chip g">Pago Móvil</div>
+            <div class="logo-chip">BCV</div>
+            <div class="logo-chip">Banesco</div>
+            <div class="logo-chip">Mercantil</div>
+            <div class="logo-chip">Provincial</div>
+            <div class="logo-chip">Reserve</div>
+            <div class="logo-chip">Wally</div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Conecta todo tu dinero</h3>
+          <p>Integra tus billeteras cripto, apps de pago y bancos venezolanos para ver todo tu patrimonio en un solo lugar.</p>
+        </div>
+      </div>
+
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="cmd">
+            <div class="q">¿Qué deseas hacer?</div>
+            <div class="opt"><span>◈</span> Ver tasa USDT de hoy</div>
+            <div class="opt sel"><span>↺</span> Convertir dólares a bolívares <span class="kbd">↵</span></div>
+            <div class="opt"><span>▤</span> Ver histórico de la brecha</div>
+            <div class="opt"><span>🔔</span> Crear alerta de tasa <span class="kbd">Ctrl K</span></div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Tú tienes el control</h3>
+          <p>Rápido como un rayo. Atajos para todo con Cmd+K en Mac, Ctrl+K en Windows. Modo oscuro por defecto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEET GENIUS -->
+  <section class="block wrap">
+    <div class="section-lead">
+      <h2 class="big"><span class="muted-title">Conoce a</span> Genio</h2>
+      <p>Nuestro asistente con IA está diseñado para <b>descifrar la economía venezolana</b> y mostrarte las tendencias clave de tus finanzas.</p>
+    </div>
+    <div class="grid-2" style="margin-top:0">
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="mini" style="padding:20px">
+            <div class="alert-card" style="margin-bottom:14px">⚠️ <div><b>Alerta de brecha</b><br/>La brecha USDT/BCV podría superar el 18% este mes.</div></div>
+            <svg viewBox="0 0 400 90" width="100%" height="90"><path d="M0,70 C60,60 100,40 160,45 C220,50 260,20 320,25 C360,28 380,40 400,30" fill="none" stroke="#4c9dff" stroke-width="2" stroke-dasharray="4 4"/></svg>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Pronóstico inteligente</h3>
+          <p>Aprovecha la analítica predictiva de Bóveda Cuki para anticipar el rumbo de las tasas y proteger tu poder adquisitivo.</p>
+        </div>
+      </div>
+      <div class="feature tilt-card">
+        <div class="glare"></div>
+        <div class="art">
+          <div class="chat-art">
+            <div class="bubble-in">¡Hola! ¿En qué puedo ayudarte hoy?</div>
+            <div class="bubble-input"><span>¿Cuánto pierdo si cobro a tasa BCV?</span><span class="ask">Preguntar</span></div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Conversa con Genio</h3>
+          <p>Solo pregunta. Con Genio a tu lado, entender la inflación, la brecha y tus remesas se vuelve simple y natural.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="block wrap" id="noticias">
+    <div class="section-lead">
+      <h2 class="big">La economía de Venezuela,<br/><span class="muted-title">en contexto.</span></h2>
+      <p>Noticias y datos que mueven las tasas, curados para que tomes mejores decisiones con tu dinero.</p>
+    </div>
+    <div class="news-grid">
+      <article class="news-card">
+        <span class="tag">Inflación</span>
+        <h3>La inflación desacelera a 524,5% en mayo</h3>
+        <p>El índice interanual bajó desde 611,9% en abril. Analistas proyectan un cierre de 2026 en torno al 174%, con una inflación en dólares cercana al 20%.</p>
+        <div class="meta"><span>Fuente: TradingEconomics</span><span>Jul 2026</span></div>
+      </article>
+      <article class="news-card">
+        <span class="tag">Tipo de cambio</span>
+        <h3>El dólar BCV se duplicó en el primer semestre</h3>
+        <p>La tasa oficial subió 106,7% entre enero y junio de 2026, cerrando en 639,70 Bs/USD y acelerando la depreciación del bolívar frente al USDT.</p>
+        <div class="meta"><span>Fuente: Finanzas Digital</span><span>02 Jul 2026</span></div>
+      </article>
+      <article class="news-card">
+        <span class="tag">Remesas</span>
+        <h3>Las remesas se estabilizan en USD 3.200M</h3>
+        <p>El flujo de remesas se consolida como soporte clave del consumo de los hogares. Se espera un comportamiento similar durante 2026.</p>
+        <div class="meta"><span>Fuente: CESLA</span><span>Jul 2026</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final wrap">
+    <h2>Descubre a dónde puede llevarte el control de tu dinero.</h2>
+    <p>La primera herramienta financiera venezolana que amarás. Y la última que necesitarás.</p>
+    <a href="#" class="btn btn-primary">Únete a la lista de espera</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="wrap">
+    <div class="foot-top">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#4c9dff" stroke-width="1.6"/></svg>
+        Bóveda Cuki
+      </div>
+      <div class="foot-links">
+        <a href="#noticias">Noticias</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Términos de uso</a>
+      </div>
+      <div class="socials">
+        <a href="#">𝕏</a><a href="#">in</a><a href="#">f</a>
+      </div>
+    </div>
+    <p class="foot-legal">
+      © 2026 Bóveda Cuki Tecnologías Financieras. Bóveda Cuki es una marca en desarrollo con fines demostrativos. Las tasas y noticias mostradas son informativas (valores del 02 de julio de 2026) y no constituyen asesoría financiera. Bóveda Cuki no es un banco; consulta siempre las fuentes oficiales como el Banco Central de Venezuela (BCV) antes de operar.
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

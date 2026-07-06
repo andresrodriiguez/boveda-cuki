@@ -1,0 +1,13 @@
+# Dependencias (se regeneran con npm install)
+node_modules/
+
+# Capturas del proceso de desarrollo (no necesarias para desplegar)
+screenshots/
+
+# Sistema / logs
+*.log
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel
