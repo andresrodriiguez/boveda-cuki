@@ -2,12 +2,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { chromium, devices } from 'playwright';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const file = 'file:///' + path.join(__dirname, 'index.html').replace(/\\/g, '/');
+const target = process.argv[2] || ('file:///' + path.join(__dirname, 'index.html').replace(/\\/g, '/'));
 
 const browser = await chromium.launch({ channel: 'chrome' });
-const ctx = await browser.newContext({ ...devices['iPhone 13'] });
+const ctx = await browser.newContext({ ...devices['iPhone 13'], serviceWorkers: 'block' });
 const page = await ctx.newPage();
-await page.goto(file, { waitUntil: 'networkidle' });
+await page.goto(target, { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 
 const data = await page.evaluate(() => {

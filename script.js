@@ -262,8 +262,17 @@ window.__revealAll = function () {
 //  PWA — Service Worker + botón "Instalar app"
 // ============================================================
 if ('serviceWorker' in navigator) {
+  // Si ya había un SW controlando y llega uno nuevo, recargar una vez para tomar la versión fresca
+  let hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController && !reloaded) { reloaded = true; window.location.reload(); }
+  });
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      // Buscar actualizaciones al cargar
+      reg.update().catch(() => {});
+    }).catch(() => {});
   });
 }
 

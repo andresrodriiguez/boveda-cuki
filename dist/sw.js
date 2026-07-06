@@ -1,9 +1,10 @@
 // Service Worker — Bóveda Cuki PWA
 // Estrategia:
-//  - App shell (HTML/CSS/JS/iconos): cache-first + actualización en segundo plano.
-//  - API de tasas (dolarapi.com): network-first + cache de respaldo (para funcionar offline).
-//  - Cambia CACHE al publicar una versión nueva para forzar la actualización.
-const CACHE = 'boveda-cuki-v1';
+//  - Recursos propios (HTML/CSS/JS/iconos): NETWORK-FIRST -> siempre la última
+//    versión cuando hay internet; si no hay red, cae a la caché (offline).
+//  - API de tasas (dolarapi.com): network-first + caché de respaldo.
+//  - Sube el número de CACHE en cada publicación para invalidar lo viejo.
+const CACHE = 'boveda-cuki-v3';
 const SHELL = [
   './',
   './index.html',
@@ -34,36 +35,25 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  // 1) API de tasas: network-first, guarda copia para offline
+  // API de tasas: red primero, con respaldo de caché
   if (url.hostname.endsWith('dolarapi.com')) {
     event.respondWith(
       fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-          return res;
-        })
+        .then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {}); return res; })
         .catch(() => caches.match(req))
     );
     return;
   }
 
-  // 2) Recursos propios (app shell): cache-first + refresco en segundo plano
+  // Recursos propios: RED primero (siempre lo último), respaldo en caché si no hay internet
   if (url.origin === self.location.origin) {
     event.respondWith(
-      caches.match(req).then((cached) => {
-        const network = fetch(req)
-          .then((res) => {
-            if (res && res.status === 200) {
-              const copy = res.clone();
-              caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-            }
-            return res;
-          })
-          .catch(() => cached);
-        return cached || network;
-      })
+      fetch(req)
+        .then((res) => {
+          if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {}); }
+          return res;
+        })
+        .catch(() => caches.match(req).then((c) => c || caches.match('./index.html')))
     );
   }
-  // 3) Terceros (fuentes de Google, etc.): se dejan pasar por la red
 });
